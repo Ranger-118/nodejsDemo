@@ -8,10 +8,13 @@ module.exports = {
    * @param {Function} fn - The function should take `req` as the only input parameters.
    */
   reply(fn) {
-    return (req, res, next) => {
-      return Promise.resolve(fn(req))
-        .then((data) => res.send(data))
-        .catch((err) => next(err));
+    return async (req, res, next) => {
+      try {
+        const data = await Promise.resolve(fn(req));
+        return res.send(data);
+      } catch (err) {
+        return next(err);
+      }
     };
   }
 };
